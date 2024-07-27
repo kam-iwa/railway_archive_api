@@ -3,7 +3,7 @@ import subprocess
 import sys
 
 parser = argparse.ArgumentParser()
-parser.add_argument("parameter", nargs='?', help=" - Available parameters: `up`, `build`, `restart`, `down`")
+parser.add_argument("parameter", nargs='?', help=" - Available parameters: `up`, `build`, `restart`, `down`. Description of parameters is available in readme file.")
 args = parser.parse_args()
 
 if __name__ == "__main__":
@@ -13,7 +13,7 @@ if __name__ == "__main__":
         sys.exit(-1)
 
     if sys.argv[1].lower() == "up":
-        print(f"Run API. Program will exit now.\n{'=' * 25}")
+        print(f"Run API. \n{'=' * 25}")
         subprocess.run(["docker", "compose", "up"])
     elif sys.argv[1].lower() == "build":
         print(f"Build API.\n{'=' * 25}")
