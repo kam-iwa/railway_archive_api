@@ -10,11 +10,12 @@ class StationType(Enum):
 
 
 class Station(Model):
-    id = AutoField(primary_key=True)
-    name = TextField(unique=True)
-    type = TextField(default=False)
-    lat = DecimalField(null=True)
-    lon = DecimalField(null=True)
 
     class Meta:
         database = db
+
+    id = AutoField(primary_key=True)
+    name = TextField(unique=True)
+    type = TextField(null=True)
+    lat = DecimalField(null=True)
+    lon = DecimalField(null=True)
