@@ -1,8 +1,8 @@
 from peewee import Model, AutoField, ForeignKeyField, TimeField, IntegerField
 
 from app.app import db
-from app.models.stations import Station
-from app.models.routes import Route
+from app.models.core.models_stations import Station
+from app.models.core.models_routes import Route
 
 
 class Stop(Model):

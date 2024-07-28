@@ -20,12 +20,25 @@ swagger = Swagger(app)
 
 # Create models
 def create_models():
-    pass
+    from models.core.models_routes import Route
+    from models.core.models_stations import Station
+    from models.core.models_stops import Stop
+
+    with db:
+        db.create_tables([
+            Route,
+            Station,
+            Stop
+        ])
 
 
 # Register blueprints
 def register_blueprints():
-    pass
+    from blueprints.core import route_mod, station_mod, stop_mod
+
+    app.register_blueprint(route_mod)
+    app.register_blueprint(station_mod)
+    app.register_blueprint(stop_mod)
 
 
 if __name__ == '__main__':
