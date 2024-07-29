@@ -1,14 +1,14 @@
 from peewee import Model, AutoField, ForeignKeyField, TimeField, IntegerField
 
-from app.app import db
-from app.models.core.models_stations import Station
-from app.models.core.models_routes import Route
+from database import DB
+from models.core.models_stations import Station
+from models.core.models_routes import Route
 
 
 class Stop(Model):
 
     class Meta:
-        database = db
+        database = DB
 
     id = AutoField(primary_key=True)
     route = ForeignKeyField(Route, column_name='route')

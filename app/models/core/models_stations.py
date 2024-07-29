@@ -1,7 +1,7 @@
 from enum import Enum
 from peewee import Model, AutoField, TextField, DecimalField
 
-from app.app import db
+from database import DB
 
 
 class StationType(Enum):
@@ -12,7 +12,7 @@ class StationType(Enum):
 class Station(Model):
 
     class Meta:
-        database = db
+        database = DB
 
     id = AutoField(primary_key=True)
     name = TextField(unique=True)

@@ -1,7 +1,7 @@
 from enum import Enum
 from peewee import Model, AutoField, TextField, ForeignKeyField, DateField
 
-from app.app import db
+from database import DB
 
 
 class RouteType(Enum):
@@ -13,7 +13,7 @@ class RouteType(Enum):
 class Route(Model):
 
     class Meta:
-        database = db
+        database = DB
 
     id = AutoField(primary_key=True)
     number = TextField()

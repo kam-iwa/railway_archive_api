@@ -1,5 +1,7 @@
 FROM python:3.11-slim-bookworm
 
+ENV PYTHONDONTWRITEBYTECODE=1
+
 COPY requirements.txt /app/
 WORKDIR /app
 
