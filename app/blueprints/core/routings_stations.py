@@ -2,8 +2,8 @@ from flask import jsonify, request
 from flasgger import swag_from
 from peewee import fn
 
-from app.blueprints.core import station_mod
-from app.models.core.models_stations import Station
+from blueprints.core import station_mod
+from models.core.models_stations import Station
 
 
 @station_mod.route('/api/stations', methods=['GET'])
@@ -11,8 +11,7 @@ from app.models.core.models_stations import Station
 def stations_get():
     stations = Station.select()
     return jsonify(
-        [{"name": station.name, "lat": station.lat, "lon": station.lon, "type": station.type} for station in
-         stations])
+        [{"id": station.id, "name": station.name, "lat": station.lat, "lon": station.lon, "type": station.type} for station in stations])
 
 
 @station_mod.route('/api/stations/<station_name>', methods=['GET'])
@@ -35,24 +34,27 @@ def stations_create():
 
 
 @station_mod.route('/api/stations/<int:station_id>', methods=["PUT"])
-# @swag_from('docs/stations.station_id.put.yml')
-def stations_edit(station_id: int):
-    station = Station.get_or_none(id == station_id)
+@swag_from('docs/stations.station_id.put.yml')
+def stations_update(station_id: int):
+    station = Station.get_or_none(Station.id == station_id)
     if station is None:
         return jsonify({'error': 'Station not found.'})
 
     data = request.get_json()["data"]
-    station = Station.update(**data)
+    query = Station.update(**data).where(Station.id == station_id)
+    query.execute()
 
     return jsonify({}), 200
 
 
 @station_mod.route('/api/stations/<int:station_id>', methods=["DELETE"])
-# @swag_from('docs/stations.station_id.delete.yml')
+@swag_from('docs/stations.station_id.delete.yml')
 def stations_delete(station_id: int):
-    station = Station.get_or_none(id == station_id)
+    station = Station.get_or_none(Station.id == station_id)
     if station is None:
         return jsonify({'error': 'Station not found.'})
 
-    Station.delete().where(Station.id == station_id)
+    query = Station.delete().where(Station.id == station_id)
+    query.execute()
+
     return jsonify({}), 204

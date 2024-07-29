@@ -28,6 +28,7 @@ def register_blueprints():
 
 if __name__ == '__main__':
     app = Flask(__name__)
+
     swagger = Swagger(app)
 
     create_models()

@@ -1,0 +1,16 @@
+tags:
+  - stations
+summary: Get all train stations
+parameters:
+  - name: station_id
+    in: path
+    description: ID of the train station to retrieve
+    required: true
+    type: number
+responses:
+  '200':
+    description: OK
+    schema:
+      type: array
+      items:
+        type: string

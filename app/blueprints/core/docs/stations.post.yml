@@ -1,0 +1,33 @@
+tags:
+  - stations
+summary: Create a new train station
+parameters:
+  - in: body
+    name: station
+    required: true
+    schema:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "Lublin Główny"
+            type:
+              type: string
+              example: "station"
+            lat:
+              type: number
+              example: 51.231389
+            lon:
+              type: number
+              example: 22.568333
+responses:
+  '201':
+    description: Created
+    schema:
+      type: object
+      properties:
+        data:
+          type: integer

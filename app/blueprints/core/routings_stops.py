@@ -1,7 +1,7 @@
 from flask import jsonify, request
 
-from app.blueprints.core import stop_mod
-from app.models.core.models_stops import Stop
+from blueprints.core import stop_mod
+from models.core.models_stops import Stop
 
 
 @stop_mod.route('/stops', methods=['GET'])
@@ -19,7 +19,7 @@ def stops_create():
 
 
 @stop_mod.route('/stops/<int:stop_id>', methods=["PUT"])
-def stop_edit(stop_id: int):
+def stop_update(stop_id: int):
     stop = Stop.get_or_none(id == stop_id)
     if stop is None:
         return jsonify({'error': 'Stop not found.'})
