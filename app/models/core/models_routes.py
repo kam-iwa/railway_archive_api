@@ -17,7 +17,7 @@ class Route(Model):
 
     id = AutoField(primary_key=True)
     number = TextField()
-    name = TextField()
+    name = TextField(null=True)
     type = TextField(default=RouteType.LOCAL)
     date_start = DateField(null=True)
     date_end = DateField(null=True)

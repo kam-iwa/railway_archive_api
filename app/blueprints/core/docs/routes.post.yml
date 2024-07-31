@@ -1,0 +1,52 @@
+tags:
+  - core_routes
+summary: Create a new train route
+parameters:
+  - in: body
+    name: station
+    required: true
+    schema:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            number:
+              type: string
+              example: "Os 21370"
+            name:
+              type: string
+              example: "Lubelska Kolej Miejska"
+            type:
+              type: string
+              example: "local"
+            stops:
+              type: array
+              items:
+                type: object
+                properties:
+                  station:
+                    type: number
+                    example: 1
+                  arrival_time:
+                    type: string
+                    example: "21:32"
+                  departure_time:
+                    type: string
+                    example: "21:37"
+              example:
+                - station: 1
+                  arrival_time: "21:32"
+                  departure_time: "21:37"
+                - station: 2
+                  arrival_time: "21:43"
+                  departure_time: "21:48"
+
+responses:
+  '201':
+    description: Created
+    schema:
+      type: object
+      properties:
+        data:
+          type: integer

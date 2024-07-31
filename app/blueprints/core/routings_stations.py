@@ -14,14 +14,14 @@ def stations_get():
         [{"id": station.id, "name": station.name, "lat": station.lat, "lon": station.lon, "type": station.type} for station in stations])
 
 
-@station_mod.route('/api/stations/<station_name>', methods=['GET'])
-@swag_from('docs/stations.station_name.get.yml')
-def stations_station_get(station_name: str):
-    station = Station.get_or_none(fn.lower(Station.name) == station_name.strip().lower())
+@station_mod.route('/api/stations/<station_id>', methods=['GET'])
+@swag_from('docs/stations.station_id.get.yml')
+def stations_station_get(station_id: str):
+    station = Station.get_or_none(Station.id == station_id)
     if station is None:
         return jsonify({'error': 'Station not found.'})
 
-    return jsonify({"name": station.name, "lat": station.lat, "lon": station.lon, "type": station.type})
+    return jsonify({"id": station.id, "name": station.name, "lat": station.lat, "lon": station.lon, "type": station.type})
 
 
 @station_mod.route('/api/stations', methods=['POST'])

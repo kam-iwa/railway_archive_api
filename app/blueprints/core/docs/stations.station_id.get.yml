@@ -1,0 +1,32 @@
+tags:
+- core_stations
+summary: Get a single train station
+parameters:
+  - name: station_id
+    in: path
+    description: ID of the train station to retrieve
+    required: true
+    type: number
+responses:
+  '200':
+    description: OK
+    schema:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        name:
+          type: string
+          example: "Lublin Główny"
+        type:
+          type: string
+          example: "station"
+        lat:
+          type: number
+          example: 51.231389
+        lon:
+          type: number
+          example: 22.568333
+  '404':
+    description: Station not found

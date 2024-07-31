@@ -1,5 +1,5 @@
 tags:
-  - stations
+  - core_stations
 summary: Get all train stations
 responses:
   '200':
@@ -7,4 +7,34 @@ responses:
     schema:
       type: array
       items:
-        type: string
+        type: object
+        properties:
+          data:
+            type: object
+            properties:
+              id:
+                type: number
+                example: 1
+              name:
+                type: string
+                example: "Lublin Główny"
+              type:
+                type: string
+                example: "station"
+              lat:
+                type: number
+                example: 51.231389
+              lon:
+                type: number
+                example: 22.568333
+          example:
+            - id: 1
+              name: "Lublin Główny"
+              type: "station"
+              lat: 51.231389
+              lon: 22.568333
+            - id: 2
+              name: "Lublin Zemborzyce"
+              type: "station"
+              lat: 51.17142
+              lon: 22.50228
