@@ -1,0 +1,36 @@
+tags:
+- core_stops
+summary: Get a single train stop
+parameters:
+  - name: stop_id
+    in: path
+    description: ID of the stop to retrieve
+    required: true
+    type: number
+responses:
+  '200':
+    description: OK
+    schema:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: number
+              example: 1
+            route:
+              type: number
+              example: 1
+            station:
+              type: number
+              example: 1
+            arrival_time:
+              type: string
+              example: "4:15"
+            departure_time:
+              type: string
+              example: "4:20"
+
+  '404':
+    description: Station not found

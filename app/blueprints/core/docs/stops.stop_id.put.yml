@@ -1,0 +1,40 @@
+tags:
+  - core_stops
+summary: Update a existing train stop
+parameters:
+  - name: stop_id
+    in: path
+    description: ID of the train stop to update
+    required: true
+    type: number
+  - in: body
+    name: data
+    required: true
+    schema:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            route:
+              type: number
+              example: 1
+            station:
+              type: number
+              example: 1
+            arrival_time:
+              type: string
+              example: "4:15"
+            departure_time:
+              type: string
+              example: "4:20"
+
+
+responses:
+  '200':
+    description: Updated
+    schema:
+      type: object
+      properties:
+        data:
+          type: integer

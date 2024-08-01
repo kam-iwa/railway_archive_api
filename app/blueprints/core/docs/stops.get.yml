@@ -1,0 +1,10 @@
+tags:
+  - core_stops
+summary: Get all stops
+responses:
+  '200':
+    description: OK
+    schema:
+      type: array
+      items:
+        type: string
