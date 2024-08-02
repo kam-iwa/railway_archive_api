@@ -2,7 +2,10 @@ from flasgger import swag_from
 from flask import jsonify, request
 
 from blueprints.core import stop_mod
+from models.core.models_routes import Route
+from models.core.models_stations import Station
 from models.core.models_stops import Stop
+from utils.core.decorators import validate_request
 
 
 @stop_mod.route('/stops', methods=['GET'])
@@ -35,15 +38,29 @@ def stops_stop_id_get(stop_id: int):
 
 
 @stop_mod.route('/stops', methods=['POST'])
+@validate_request(
+    required_keys=["route", "station", "arrival_time", "departure_time"],
+    optional_keys=["arrival_day", "departure_day"]
+)
 @swag_from('docs/stops.post.yml')
 def stops_create():
     data = request.get_json()["data"]
+
+    route = Route.get_or_none(Route.id == data["route"])
+    if route is None:
+        return jsonify({'error': 'Route not found.'})
+
+    station = Station.get_or_none(Station.id == data["station"])
+    if station is None:
+        return jsonify({'error': 'Station not found.'})
+
     stop = Stop.create(**data)
 
     return jsonify({'data': stop.id}), 201
 
 
 @stop_mod.route('/stops/<int:stop_id>', methods=["PUT"])
+@validate_request(optional_keys=["route", "station", "arrival_time", "departure_time", "arrival_day", "departure_day"])
 @swag_from('docs/stops.stop_id.put.yml')
 def stop_update(stop_id: int):
     stop = Stop.get_or_none(Stop.id == stop_id)

@@ -1,12 +1,12 @@
 from flask import jsonify, request
 from flasgger import swag_from
-from peewee import fn
 
 from blueprints.core import route_mod
 from database import DB
 from models.core.models_routes import Route
 from models.core.models_stations import Station
 from models.core.models_stops import Stop
+from utils.core.decorators import validate_request
 
 
 @route_mod.route('/api/routes', methods=['GET'])
@@ -38,6 +38,10 @@ def routes_route_id_get(route_id: int):
 
 
 @route_mod.route('/api/routes', methods=['POST'])
+@validate_request(
+    required_keys=["number", "name", "type"],
+    optional_keys=["date_start", "date_end", "parent_route"]
+)
 @swag_from('docs/routes.post.yml')
 def routes_create():
     data = request.get_json()["data"]
@@ -56,6 +60,7 @@ def routes_create():
 
 
 @route_mod.route('/api/routes/<int:route_id>', methods=["PUT"])
+@validate_request(optional_keys=["number", "name", "type", "date_start", "date_end", "parent_route"])
 @swag_from('docs/routes.route_id.put.yml')
 def route_update(route_id: int):
     route = Route.get_or_none(Route.id == route_id)

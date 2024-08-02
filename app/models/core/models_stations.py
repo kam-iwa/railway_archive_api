@@ -16,6 +16,6 @@ class Station(Model):
 
     id = AutoField(primary_key=True)
     name = TextField(unique=True)
-    type = TextField(null=True)
-    lat = DecimalField(null=True)
-    lon = DecimalField(null=True)
+    type = TextField(default=StationType.STOP)
+    lat = DecimalField()
+    lon = DecimalField()
