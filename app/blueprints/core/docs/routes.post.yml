@@ -1,6 +1,12 @@
 tags:
   - core_routes
 summary: Create a new train route
+description: "
+        Required keys: `number`, `name`, `type`, `stops`\n
+        Optional keys: `date_start`, `date_end`, `parent_route`\n
+        \n
+        Required keys in `stops` dict: `station`, `arrival_time`, `departure_time`
+        "
 parameters:
   - in: body
     name: station

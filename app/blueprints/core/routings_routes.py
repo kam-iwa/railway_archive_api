@@ -39,7 +39,7 @@ def routes_route_id_get(route_id: int):
 
 @route_mod.route('/api/routes', methods=['POST'])
 @validate_request(
-    required_keys=["number", "name", "type"],
+    required_keys=["number", "name", "type", "stops"],
     optional_keys=["date_start", "date_end", "parent_route"]
 )
 @swag_from('docs/routes.post.yml')
@@ -48,7 +48,13 @@ def routes_create():
     route = Route.create(**data)
 
     stops = data["stops"]
+
     for stop in stops:
+        if set(stop.keys()) - {"station", "arrival_time", "departure_time"}:
+            return jsonify({'error': 'Invalid `stops` payload'})
+        if {"station", "arrival_time", "departure_time"} - set(stop.keys()):
+            return jsonify({'error': 'Invalid `stops` payload'})
+
         stop["route"] = route.id
         station = Station.get_or_none(Station.id == stop["station"])
         if station is None:

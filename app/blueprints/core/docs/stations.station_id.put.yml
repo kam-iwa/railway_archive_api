@@ -1,6 +1,9 @@
 tags:
   - core_stations
 summary: Update a existing train station
+description: "
+        Optional keys: `name`, `type`, `lon`, `lat`
+        "
 parameters:
   - name: station_id
     in: path

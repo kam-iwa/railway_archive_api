@@ -1,6 +1,9 @@
 tags:
   - core_stations
 summary: Create a new train station
+description: "
+        Required keys: `name`, `type`, `lon`, `lat`
+        "
 parameters:
   - in: body
     name: station

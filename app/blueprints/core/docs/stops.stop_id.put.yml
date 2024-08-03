@@ -1,6 +1,9 @@
 tags:
   - core_stops
 summary: Update a existing train stop
+description: "
+        Optional keys: `route`, `station`, `arrival_time`, `departure_time`, `arrival_day`, `departure_day`
+        "
 parameters:
   - name: stop_id
     in: path

@@ -1,6 +1,9 @@
 tags:
   - core_routes
 summary: Update a existing train route
+description: "
+        Optional keys: `number`, `name`, `type`, `date_start`, `date_end`, `parent_route`
+        "
 parameters:
   - name: route_id
     in: path
