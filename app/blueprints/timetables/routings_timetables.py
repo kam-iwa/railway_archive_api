@@ -120,7 +120,7 @@ def get_station_departures_by_relations(station: Station):
     sql = f"""
     select 
         intermediate_stop[array_upper( intermediate_stop , 1)] as destination_station, 
-        array_agg( intermediate_stop ) as intermediate_stations, 
+        intermediate_stop, 
         array_agg( array[departure::text, subquery.route_id::text] order by departure ) as departures_routes 
     from ( 
         select
@@ -133,15 +133,15 @@ def get_station_departures_by_relations(station: Station):
                     ( (stp.departure_day > st.departure_day ))
                     )
             ) as "intermediate_stop",
-            st.route as route_id, 
-            st.departure_time as departure,
-            st.station as station_id
-        from stop st ) subquery
+	        st.route as route_id, 
+	        st.departure_time as departure,
+	        st.station as station_id
+    	from stop st ) subquery
     join station s on s.id = subquery.station_id
     where ( 
         (s.id = {station_id}) and array_length(subquery.intermediate_stop, 1) > 0
         )
-    group by destination_station
+    group by intermediate_stop
     order by destination_station, departures_routes;
     """
 
@@ -150,22 +150,29 @@ def get_station_departures_by_relations(station: Station):
     result = {}
     data = {}
     for row in query:
-        trains = []
-        for idx in range(0, len(row[1])):
-            intermediate_stations = row[1][idx]
-            departure = row[2][idx][0][:-3]
-            route_id = int(row[2][idx][1])
-            trains.append([intermediate_stations, departure, route_id])
-        data[row[0]] = trains
-        result[row[0]] = []
+        intermediate_stations = row[1]
+        departures = [departure[0][:-3] for departure in row[2]]
+        route_ids = [int(departure[1]) for departure in row[2]]
 
-    destinations = result.keys()
+        trains = [intermediate_stations, departures, route_ids]
+
+        if row[0] not in data:
+            data[row[0]] = [trains]
+            result[row[0]] = []
+        else:
+            data[row[0]].append(trains)
+
+    destinations = data.keys()
 
     for station in destinations:
-        for train in data[station]:
-            train_destinations = list(set(destinations) & set(train[0]))
+        for train_group in data[station]:
+            train_destinations = list(set(destinations) & set(train_group[0]))
+
             for dest in train_destinations:
-                result[dest].append((train[1], train[2]))
+                arrivals = train_group[1]
+                route_ids = train_group[2]
+                for idx in range(0, len(arrivals)):
+                    result[dest].append((arrivals[idx], route_ids[idx]))
 
     return result
 
@@ -271,18 +278,22 @@ def get_station_arrivals_by_relations(station: Station):
 
         trains = [intermediate_stations, departures, route_ids]
 
-        data[row[0]] = trains
-        result[row[0]] = []
+        if row[0] not in data:
+            data[row[0]] = [trains]
+            result[row[0]] = []
+        else:
+            data[row[0]].append(trains)
 
     destinations = data.keys()
 
     for station in destinations:
-        train_destinations = list(set(destinations) & set(data[station][0]))
+        for train_group in data[station]:
+            train_destinations = list(set(destinations) & set(train_group[0]))
 
-        for dest in train_destinations:
-            arrivals = data[station][1]
-            route_ids = data[station][2]
-            for idx in range(0, len(arrivals)):
-                result[dest].append((arrivals[idx], route_ids[idx]))
+            for dest in train_destinations:
+                arrivals = train_group[1]
+                route_ids = train_group[2]
+                for idx in range(0, len(arrivals)):
+                    result[dest].append((arrivals[idx], route_ids[idx]))
 
     return result
