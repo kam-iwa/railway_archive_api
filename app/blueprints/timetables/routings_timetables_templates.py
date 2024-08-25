@@ -1,7 +1,9 @@
 from flask import jsonify, request, render_template
 from flasgger import swag_from
 
-from blueprints.timetables import timetable_mod, get_station_departures, get_station_arrivals
+from blueprints.timetables import timetable_mod, get_station_departures, get_station_arrivals, \
+    get_station_departures_by_relations, get_station_arrivals_by_relations
+from models.core.models_routes import Route
 from models.core.models_stations import Station
 
 
@@ -19,6 +21,28 @@ def timetable_departures_station_id_template_get(station_id: int):
                            routes=data['data']['routes'])
 
 
+@timetable_mod.route('/api/timetable/departures/<int:station_id>/relations/template', methods=['GET'])
+@swag_from('docs/timetable.arrivals.station_id.relations.template.get.yml')
+def timetable_departures_station_id_relations_template_get(station_id: int):
+    station = Station.get_or_none(Station.id == station_id)
+    if station is None:
+        return jsonify({'error': 'Station not found.'})
+
+    data = get_station_departures_by_relations(station)
+
+    routes = Route.select(Route.id, Route.type).tuples()
+    route_types = {}
+    for route in routes:
+        route_types[route[0]] = route[1]
+
+    for destination in data:
+        data[destination] = sorted(data[destination], key=lambda x: x[0])
+
+    return render_template('timetables_departures_relations.html',
+                           station_name=station.name,
+                           data=data, route_types=route_types)
+
+
 @timetable_mod.route('/api/timetable/arrivals/<int:station_id>/template', methods=['GET'])
 @swag_from('docs/timetable.arrivals.station_id.template.get.yml')
 def timetable_arrivals_station_id_template_get(station_id: int):
@@ -31,3 +55,25 @@ def timetable_arrivals_station_id_template_get(station_id: int):
     return render_template('timetables_arrivals.html',
                            station_name=station.name,
                            routes=data['data']['routes'])
+
+
+@timetable_mod.route('/api/timetable/arrivals/<int:station_id>/relations/template', methods=['GET'])
+@swag_from('docs/timetable.arrivals.station_id.relations.template.get.yml')
+def timetable_arrivals_station_id_relations_template_get(station_id: int):
+    station = Station.get_or_none(Station.id == station_id)
+    if station is None:
+        return jsonify({'error': 'Station not found.'})
+
+    data = get_station_arrivals_by_relations(station)
+
+    routes = Route.select(Route.id, Route.type).tuples()
+    route_types = {}
+    for route in routes:
+        route_types[route[0]] = route[1]
+
+    for destination in data:
+        data[destination] = sorted(data[destination], key=lambda x: x[0])
+
+    return render_template('timetables_arrivals_relations.html',
+                           station_name=station.name,
+                           data=data, route_types=route_types)

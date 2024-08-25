@@ -1,0 +1,62 @@
+<head>
+  <style>
+      table {border: 0.5mm solid black; border-collapse:collapse; text-align: center; width: 100%;}
+      th, td {padding: 2mm; border: 0.5mm solid black;}
+      .main {border: 1mm solid black; width: 1280px; padding: 10mm;
+        margin: auto;}
+      .time {background-color: black; color: white; font-weight: bold;}
+  </style>
+</head>
+
+<body>
+<div class="main" style="font-family:Verdana">
+<p><b><big>Odjazdy</big></b> / Departures / Відправлення</p>
+<p><h1>{{station_name}}</h1></p>
+{% block content %}
+  <table id="data" class="table table-striped" border="1">
+    <thead>
+      <tr>
+        <th style="width: 20%;">Kierunek <br><i><small>Direction</small></i></th>
+        <th style="background-color: #ffe600;">Odjazdy<br><i><small>Departures</small></i></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for relation in data %}
+<!--        -->
+        <tr>
+          <td ><b><big><big>{{ relation }}</big></big></b></td>
+          <td style="background-color: #ffe600;">
+            <div style="text-align: left;">
+            {% for route in data[relation] %}
+              {% if route_types[route[1]] != 'local' %}<span style="color: red;">{% else %}<span>{% endif %}
+                <b>{{route[0].replace(' ','\u00A0')}}</b>
+              <small>
+                {% if route_types[route[1]] == 'local' %}Os{% elif route_types[route[1]] == 'fast' %}P{% else %}Ex{% endif %}
+              </small>
+            </span></span>
+              {% if not loop.last %}, {% endif %}
+            {% endfor %} </div>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+<div class="legend">
+  <h3>Legenda:</h3>
+  <br>
+  1 - 1 klasa / First class seats / 1 клас<br>
+  2 - 2 klasa / Second class seats / 2 клас<br>
+  R - rezerwacja miejsc / seat booking / бронювання місць<br>
+  ➀ - w poniedziałki / Mondays / по понеділках<br>
+  ➁ - we wtorki / Tuesdays / по вівторках<br>
+  ➂ - w środy / Wednesdays / по середах<br>
+  ➃ - w czwartki / Thursdays / по четвергах<br>
+  ➄ - w piątki / Fridays / по п'ятницях<br>
+  ➅ - w soboty / Saturdays / по суботах<br>
+  ➆ - w niedziele / Sundays / по неділях<br>
+</div>
+
+</div>
+</body>
