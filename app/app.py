@@ -20,10 +20,12 @@ def create_models():
 # Register blueprints
 def register_blueprints():
     from blueprints.core import route_mod, station_mod, stop_mod
+    from blueprints.timetables import timetable_mod
 
     app.register_blueprint(route_mod)
     app.register_blueprint(station_mod)
     app.register_blueprint(stop_mod)
+    app.register_blueprint(timetable_mod)
 
 
 if __name__ == '__main__':
