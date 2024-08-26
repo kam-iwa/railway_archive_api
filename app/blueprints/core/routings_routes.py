@@ -40,7 +40,7 @@ def routes_route_id_get(route_id: int):
 @route_mod.route('/api/routes', methods=['POST'])
 @validate_request(
     required_keys=["number", "name", "type", "stops"],
-    optional_keys=["date_start", "date_end", "parent_route"]
+    optional_keys=["date_start", "date_end"]
 )
 @swag_from('docs/routes.post.yml')
 def routes_create():
@@ -66,7 +66,7 @@ def routes_create():
 
 
 @route_mod.route('/api/routes/<int:route_id>', methods=["PUT"])
-@validate_request(optional_keys=["number", "name", "type", "date_start", "date_end", "parent_route"])
+@validate_request(optional_keys=["number", "name", "type", "date_start", "date_end"])
 @swag_from('docs/routes.route_id.put.yml')
 def route_update(route_id: int):
     route = Route.get_or_none(Route.id == route_id)
