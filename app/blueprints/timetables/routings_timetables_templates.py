@@ -29,18 +29,11 @@ def timetable_departures_station_id_relations_template_get(station_id: int):
         return jsonify({'error': 'Station not found.'})
 
     data = get_station_departures_by_relations(station)
-
-    routes = Route.select(Route.id, Route.type).tuples()
-    route_types = {}
-    for route in routes:
-        route_types[route[0]] = route[1]
-
-    for destination in data:
-        data[destination] = sorted(data[destination], key=lambda x: x[0])
+    data = dict(sorted(data.items()))
 
     return render_template('timetables_departures_relations.html',
                            station_name=station.name,
-                           data=data, route_types=route_types)
+                           data=data)
 
 
 @timetable_mod.route('/api/timetable/arrivals/<int:station_id>/template', methods=['GET'])
@@ -65,15 +58,8 @@ def timetable_arrivals_station_id_relations_template_get(station_id: int):
         return jsonify({'error': 'Station not found.'})
 
     data = get_station_arrivals_by_relations(station)
-
-    routes = Route.select(Route.id, Route.type).tuples()
-    route_types = {}
-    for route in routes:
-        route_types[route[0]] = route[1]
-
-    for destination in data:
-        data[destination] = sorted(data[destination], key=lambda x: x[0])
+    data = dict(sorted(data.items()))
 
     return render_template('timetables_arrivals_relations.html',
                            station_name=station.name,
-                           data=data, route_types=route_types)
+                           data=data)

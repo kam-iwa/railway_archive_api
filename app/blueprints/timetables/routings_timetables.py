@@ -27,9 +27,23 @@ def timetable_departures_station_id_relations_get(station_id: int):
     if station is None:
         return jsonify({'error': 'Station not found.'})
 
-    data = get_station_departures_by_relations(station)
+    data = get_station_departures(station)
 
-    return jsonify({"data": data})
+    routes = data["data"]["routes"]
+
+    destinations = {}
+    dests = set([route["destination"]["station"] for route in routes])
+    for dest in dests:
+        destinations[dest] = []
+
+    for route in routes:
+        destinations[route["destination"]["station"]].append([route["departure_time"], route["type"], route["train_number"]])
+        for stop in route['intermediate_stops']:
+            if stop["station"] in destinations:
+                destinations[stop["station"]].append([route["departure_time"], route["type"], route["train_number"]])
+                print(stop["station"])
+
+    return jsonify({"data": destinations})
 
 
 @timetable_mod.route('/api/timetable/arrivals/<int:station_id>', methods=['GET'])
@@ -115,64 +129,21 @@ def get_station_departures(station: Station):
 
 
 def get_station_departures_by_relations(station: Station):
-    station_id = station.id
+    data = get_station_departures(station)
 
-    sql = f"""
-    select 
-        intermediate_stop[array_upper( intermediate_stop , 1)] as destination_station, 
-        intermediate_stop, 
-        array_agg( array[departure::text, subquery.route_id::text] order by departure ) as departures_routes 
-    from ( 
-        select
-            (
-                select array_agg(stt.name order by stp.departure_day, stp.departure_time) 
-                from station as stt
-                join stop stp on stt.id = stp.station  
-                where (stp.route = st.route) and ( 
-                    ( (stp.departure_time > st.departure_time) and (stp.departure_day = st.departure_day ) ) or
-                    ( (stp.departure_day > st.departure_day ))
-                    )
-            ) as "intermediate_stop",
-	        st.route as route_id, 
-	        st.departure_time as departure,
-	        st.station as station_id
-    	from stop st ) subquery
-    join station s on s.id = subquery.station_id
-    where ( 
-        (s.id = {station_id}) and array_length(subquery.intermediate_stop, 1) > 0
-        )
-    group by intermediate_stop
-    order by destination_station, departures_routes;
-    """
-
-    query = DB.execute_sql(sql)
+    routes = data["data"]["routes"]
 
     result = {}
-    data = {}
-    for row in query:
-        intermediate_stations = row[1]
-        departures = [departure[0][:-3] for departure in row[2]]
-        route_ids = [int(departure[1]) for departure in row[2]]
+    destinations = set([route["destination"]["station"] for route in routes])
+    for destination in destinations:
+        result[destination] = []
 
-        trains = [intermediate_stations, departures, route_ids]
-
-        if row[0] not in data:
-            data[row[0]] = [trains]
-            result[row[0]] = []
-        else:
-            data[row[0]].append(trains)
-
-    destinations = data.keys()
-
-    for station in destinations:
-        for train_group in data[station]:
-            train_destinations = list(set(destinations) & set(train_group[0]))
-
-            for dest in train_destinations:
-                arrivals = train_group[1]
-                route_ids = train_group[2]
-                for idx in range(0, len(arrivals)):
-                    result[dest].append((arrivals[idx], route_ids[idx]))
+    for route in routes:
+        result[route["destination"]["station"]].append(
+            [route["departure_time"], route["type"], route["train_number"]])
+        for stop in route['intermediate_stops']:
+            if stop["station"] in result:
+                result[stop["station"]].append([route["departure_time"], route["type"], route["train_number"]])
 
     return result
 
@@ -237,63 +208,19 @@ def get_station_arrivals(station: Station):
 
 
 def get_station_arrivals_by_relations(station: Station):
-    station_id = station.id
+    data = get_station_arrivals(station)
 
-    sql = f"""
-    select 
-        intermediate_stop[array_lower( intermediate_stop , 1)] as destination_station, 
-        intermediate_stop, 
-        array_agg( array[arrival::text, subquery.route_id::text] order by arrival ) as departures_routes 
-    from ( 
-        select
-         (
-            select array_agg(stt.name order by stp.arrival_day, stp.arrival_time) 
-            from station as stt
-            join stop stp on stt.id = stp.station  
-            where (stp.route = st.route) and ( 
-                ( (stp.arrival_time < st.arrival_time) and (stp.arrival_day = st.arrival_day ) ) or
-                ( (stp.arrival_day < st.arrival_day ))
-                )
-        ) as "intermediate_stop",
-                st.route as route_id, 
-                st.arrival_time as arrival,
-                st.station as station_id
-        from stop st ) subquery
-    join station s on s.id = subquery.station_id
-    where ( 
-        (s.id = {station_id}) and array_length(subquery.intermediate_stop, 1) > 0
-        )
-    group by intermediate_stop
-    order by destination_station, departures_routes;
-    """
-
-    query = DB.execute_sql(sql)
+    routes = data["data"]["routes"]
 
     result = {}
-    data = {}
-    for row in query:
-        intermediate_stations = row[1]
-        departures = [departure[0][:-3] for departure in row[2]]
-        route_ids = [int(departure[1]) for departure in row[2]]
+    origins = set([route["origin"]["station"] for route in routes])
+    for origin in origins:
+        result[origin] = []
 
-        trains = [intermediate_stations, departures, route_ids]
-
-        if row[0] not in data:
-            data[row[0]] = [trains]
-            result[row[0]] = []
-        else:
-            data[row[0]].append(trains)
-
-    destinations = data.keys()
-
-    for station in destinations:
-        for train_group in data[station]:
-            train_destinations = list(set(destinations) & set(train_group[0]))
-
-            for dest in train_destinations:
-                arrivals = train_group[1]
-                route_ids = train_group[2]
-                for idx in range(0, len(arrivals)):
-                    result[dest].append((arrivals[idx], route_ids[idx]))
+    for route in routes:
+        result[route["origin"]["station"]].append([route["arrival_time"], route["type"], route["train_number"]])
+        for stop in route['intermediate_stops']:
+            if stop["station"] in result:
+                result[stop["station"]].append([route["arrival_time"], route["type"], route["train_number"]])
 
     return result

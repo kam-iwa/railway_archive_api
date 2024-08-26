@@ -25,13 +25,13 @@
 <!--        -->
         <tr>
           <td ><b><big><big>{{ relation }}</big></big></b></td>
-          <td style="background-color: #eeeeee; ">
+          <td style="background-color: #eeeeee;">
             <div style="text-align: left;">
             {% for route in data[relation] %}
-              {% if route_types[route[1]] != 'local' %}<span style="color: red;">{% else %}<span>{% endif %}
+              {% if route[1] != 'local' %}<span style="color: red;">{% else %}<span>{% endif %}
                 <b>{{route[0].replace(' ','\u00A0')}}</b>
               <small>
-                {% if route_types[route[1]] == 'local' %}Os{% elif route_types[route[1]] == 'fast' %}P{% else %}Ex{% endif %}
+                {{route[2].replace(' ','\u00A0')}}
               </small>
             </span></span>
               {% if not loop.last %}, {% endif %}
