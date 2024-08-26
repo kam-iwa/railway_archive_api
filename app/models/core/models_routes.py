@@ -21,5 +21,3 @@ class Route(Model):
     type = TextField(default=RouteType.LOCAL)
     date_start = DateField(null=True)
     date_end = DateField(null=True)
-
-    parent_route = ForeignKeyField('self', null=True, default=None)
