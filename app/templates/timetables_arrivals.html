@@ -46,6 +46,7 @@
               {% if loop.first %}, {% endif %}
                 {{stop['station'].replace(' ','\u00A0')}}&nbsp;{{stop['departure_time']}} {% if not loop.last %}, {% endif %}
             {% endfor %}</small></div>
+            {% if route['date_period'] %}<div style="text-align: left;"><small><small><i>Kursuje w okresie: {{ route['date_period'][0].strftime("%d.%m.%Y") }} - {{ route['date_period'][1].strftime("%d.%m.%Y") }}</i></small></small></div>{% endif %}
           </td>
         </tr>
       {% endfor %}

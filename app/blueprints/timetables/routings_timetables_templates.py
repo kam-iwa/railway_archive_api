@@ -28,12 +28,12 @@ def timetable_departures_station_id_relations_template_get(station_id: int):
     if station is None:
         return jsonify({'error': 'Station not found.'})
 
-    data = get_station_departures_by_relations(station)
+    data, dates = get_station_departures_by_relations(station)
     data = dict(sorted(data.items()))
 
     return render_template('timetables_departures_relations.html',
                            station_name=station.name,
-                           data=data)
+                           data=data, dates=dates)
 
 
 @timetable_mod.route('/api/timetable/arrivals/<int:station_id>/template', methods=['GET'])
@@ -57,9 +57,9 @@ def timetable_arrivals_station_id_relations_template_get(station_id: int):
     if station is None:
         return jsonify({'error': 'Station not found.'})
 
-    data = get_station_arrivals_by_relations(station)
+    data, dates = get_station_arrivals_by_relations(station)
     data = dict(sorted(data.items()))
 
     return render_template('timetables_arrivals_relations.html',
                            station_name=station.name,
-                           data=data)
+                           data=data, dates=dates)

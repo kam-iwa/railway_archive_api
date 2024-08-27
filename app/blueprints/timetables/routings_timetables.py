@@ -1,8 +1,9 @@
+from datetime import timedelta
+
 from flask import jsonify
 from flasgger import swag_from
 
 from blueprints.timetables import timetable_mod
-from database import DB
 from models.core.models_routes import Route
 from models.core.models_stations import Station
 from models.core.models_stops import Stop
@@ -27,23 +28,9 @@ def timetable_departures_station_id_relations_get(station_id: int):
     if station is None:
         return jsonify({'error': 'Station not found.'})
 
-    data = get_station_departures(station)
+    data, dates = get_station_departures_by_relations(station)
 
-    routes = data["data"]["routes"]
-
-    destinations = {}
-    dests = set([route["destination"]["station"] for route in routes])
-    for dest in dests:
-        destinations[dest] = []
-
-    for route in routes:
-        destinations[route["destination"]["station"]].append([route["departure_time"], route["type"], route["train_number"]])
-        for stop in route['intermediate_stops']:
-            if stop["station"] in destinations:
-                destinations[stop["station"]].append([route["departure_time"], route["type"], route["train_number"]])
-                print(stop["station"])
-
-    return jsonify({"data": destinations})
+    return jsonify({"data": {"relations": data, "dates": dates}})
 
 
 @timetable_mod.route('/api/timetable/arrivals/<int:station_id>', methods=['GET'])
@@ -65,9 +52,9 @@ def timetable_arrivals_station_id_relations_get(station_id: int):
     if station is None:
         return jsonify({'error': 'Station not found.'})
 
-    data = get_station_arrivals_by_relations(station)
+    data, dates = get_station_arrivals_by_relations(station)
 
-    return jsonify({"data": data})
+    return jsonify({"data": {"relations": data, "dates": dates}})
 
 
 def get_station_departures(station: Station):
@@ -107,6 +94,14 @@ def get_station_departures(station: Station):
             Stop.arrival_day, Stop.arrival_time
         )
 
+        if route["date_start"] is not None and route["date_end"] is not None:
+            date_period = [
+                route["date_start"]+timedelta(days=route["departure_day"]),
+                route["date_end"]+timedelta(days=route["departure_day"])
+            ]
+        else:
+            date_period = None
+
         route_data = {
             "train_name": route['name'],
             "train_number": route['number'],
@@ -114,6 +109,7 @@ def get_station_departures(station: Station):
             "intermediate_stops": [],
             "destination": [],
             "type": route['type'],
+            "date_period": date_period,
         }
         for row in query.dicts():
             route_data['intermediate_stops'].append({"station": row['name'], "arrival_time": row['arrival_time'][:-3]})
@@ -131,6 +127,8 @@ def get_station_departures(station: Station):
 def get_station_departures_by_relations(station: Station):
     data = get_station_departures(station)
 
+    dates = []
+
     routes = data["data"]["routes"]
 
     result = {}
@@ -139,13 +137,19 @@ def get_station_departures_by_relations(station: Station):
         result[destination] = []
 
     for route in routes:
+        try:
+            dates_idx = dates.index(route["date_period"]) if route["date_period"] is not None else None
+        except ValueError:
+            dates.append(route["date_period"])
+            dates_idx = len(dates) - 1
+
         result[route["destination"]["station"]].append(
-            [route["departure_time"], route["type"], route["train_number"]])
+            [route["departure_time"], route["type"], route["train_number"], dates_idx])
         for stop in route['intermediate_stops']:
             if stop["station"] in result:
-                result[stop["station"]].append([route["departure_time"], route["type"], route["train_number"]])
+                result[stop["station"]].append([route["departure_time"], route["type"], route["train_number"], dates_idx])
 
-    return result
+    return result, dates
 
 
 def get_station_arrivals(station: Station):
@@ -186,6 +190,14 @@ def get_station_arrivals(station: Station):
             Stop.departure_day.asc(), Stop.departure_time
         )
 
+        if route["date_start"] is not None and route["date_end"] is not None:
+            date_period = [
+                route["date_start"]+timedelta(days=route["arrival_day"]),
+                route["date_end"]+timedelta(days=route["arrival_day"])
+            ]
+        else:
+            date_period = None
+
         route_data = {
             "train_name": route['name'],
             "train_number": route['number'],
@@ -193,6 +205,7 @@ def get_station_arrivals(station: Station):
             "intermediate_stops": [],
             "origin": [],
             "type": route['type'],
+            "date_period": date_period,
         }
         for row in query.dicts():
             route_data['intermediate_stops'].append({"station": row['name'], "departure_time": row['departure_time'][:-3]})
@@ -210,6 +223,8 @@ def get_station_arrivals(station: Station):
 def get_station_arrivals_by_relations(station: Station):
     data = get_station_arrivals(station)
 
+    dates = []
+
     routes = data["data"]["routes"]
 
     result = {}
@@ -218,9 +233,15 @@ def get_station_arrivals_by_relations(station: Station):
         result[origin] = []
 
     for route in routes:
-        result[route["origin"]["station"]].append([route["arrival_time"], route["type"], route["train_number"]])
+        try:
+            dates_idx = dates.index(route["date_period"]) if route["date_period"] is not None else None
+        except ValueError:
+            dates.append(route["date_period"])
+            dates_idx = len(dates) - 1
+
+        result[route["origin"]["station"]].append([route["arrival_time"], route["type"], route["train_number"], dates_idx])
         for stop in route['intermediate_stops']:
             if stop["station"] in result:
-                result[stop["station"]].append([route["arrival_time"], route["type"], route["train_number"]])
+                result[stop["station"]].append([route["arrival_time"], route["type"], route["train_number"], dates_idx])
 
-    return result
+    return result, dates

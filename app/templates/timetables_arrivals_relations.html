@@ -30,6 +30,7 @@
             {% for route in data[relation] %}
               {% if route[1] != 'local' %}<span style="color: red;">{% else %}<span>{% endif %}
                 <b>{{route[0].replace(' ','\u00A0')}}</b>
+                {% if route[3] is not none %} {{route[3]+1}}) {% endif %}
               <small>
                 {{route[2].replace(' ','\u00A0')}}
               </small>
@@ -44,18 +45,11 @@
 {% endblock %}
 
 <div class="legend">
-  <h3>Legenda:</h3>
   <br>
-  1 - 1 klasa / First class seats / 1 клас<br>
-  2 - 2 klasa / Second class seats / 2 клас<br>
-  R - rezerwacja miejsc / seat booking / бронювання місць<br>
-  ➀ - w poniedziałki / Mondays / по понеділках<br>
-  ➁ - we wtorki / Tuesdays / по вівторках<br>
-  ➂ - w środy / Wednesdays / по середах<br>
-  ➃ - w czwartki / Thursdays / по четвергах<br>
-  ➄ - w piątki / Fridays / по п'ятницях<br>
-  ➅ - w soboty / Saturdays / по суботах<br>
-  ➆ - w niedziele / Sundays / по неділях<br>
+  <h3>Objaśnienia skrótów:</h3>
+  {% for date in dates %}
+    {{dates.index(date)+1}}) kursuje {{date[0]}} - {{date[1]}}<br>
+  {% endfor %}
 </div>
 
 </div>

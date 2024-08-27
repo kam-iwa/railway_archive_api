@@ -48,8 +48,10 @@ def routes_create():
     route = Route.create(**data)
 
     stops = data["stops"]
+    arrival_day = 0
+    departure_day = 0
 
-    for stop in stops:
+    for idx, stop in enumerate(stops):
         if set(stop.keys()) - {"station", "arrival_time", "departure_time"}:
             return jsonify({'error': 'Invalid `stops` payload'})
         if {"station", "arrival_time", "departure_time"} - set(stop.keys()):
@@ -59,6 +61,15 @@ def routes_create():
         station = Station.get_or_none(Station.id == stop["station"])
         if station is None:
             return jsonify({'error': 'Station not found.'})
+
+        if idx > 0:
+            if stop["arrival_time"] < stops[idx - 1]["arrival_time"]:
+                arrival_day += 1
+            if stop["departure_time"] < stops[idx - 1]["departure_time"]:
+                departure_day += 1
+
+        stop["arrival_day"] = arrival_day
+        stop["departure_day"] = arrival_day
 
         Stop.create(**stop)
 
