@@ -21,13 +21,13 @@
       </tr>
     </thead>
     <tbody>
-      {% for relation in data %}
+      {% for relation in routes %}
 <!--        -->
         <tr>
           <td ><b><big><big>{{ relation }}</big></big></b></td>
           <td style="background-color: #eeeeee;">
             <div style="text-align: left;">
-            {% for route in data[relation] %}
+            {% for route in routes[relation] %}
               {% if route[1] != 'local' %}<span style="color: red;">{% else %}<span>{% endif %}
                 <b>{{route[0].replace(' ','\u00A0')}}</b>
                 {% if route[3] is not none %} {{route[3]+1}}) {% endif %}
