@@ -7,9 +7,9 @@ from models.core.models_routes import Route
 from models.core.models_stations import Station
 
 
-@timetable_mod.route('/api/timetable/departures/<int:station_id>/template', methods=['GET'])
-@swag_from('docs/timetable.arrivals.station_id.template.get.yml')
-def timetable_departures_station_id_template_get(station_id: int):
+@timetable_mod.route('/api/timetable/departures/<int:station_id>/html', methods=['GET'])
+@swag_from('docs/timetable.arrivals.station_id.html.get.yml')
+def timetable_departures_station_id_html_get(station_id: int):
     station = Station.get_or_none(Station.id == station_id)
     if station is None:
         return jsonify({'error': 'Station not found.'})
@@ -21,9 +21,9 @@ def timetable_departures_station_id_template_get(station_id: int):
                            routes=data['data']['routes'])
 
 
-@timetable_mod.route('/api/timetable/departures/<int:station_id>/relations/template', methods=['GET'])
-@swag_from('docs/timetable.arrivals.station_id.relations.template.get.yml')
-def timetable_departures_station_id_relations_template_get(station_id: int):
+@timetable_mod.route('/api/timetable/departures/<int:station_id>/relations/html', methods=['GET'])
+@swag_from('docs/timetable.arrivals.station_id.relations.html.get.yml')
+def timetable_departures_station_id_relations_html_get(station_id: int):
     station = Station.get_or_none(Station.id == station_id)
     if station is None:
         return jsonify({'error': 'Station not found.'})
@@ -36,9 +36,9 @@ def timetable_departures_station_id_relations_template_get(station_id: int):
                            data=data, dates=dates)
 
 
-@timetable_mod.route('/api/timetable/arrivals/<int:station_id>/template', methods=['GET'])
-@swag_from('docs/timetable.arrivals.station_id.template.get.yml')
-def timetable_arrivals_station_id_template_get(station_id: int):
+@timetable_mod.route('/api/timetable/arrivals/<int:station_id>/html', methods=['GET'])
+@swag_from('docs/timetable.arrivals.station_id.html.get.yml')
+def timetable_arrivals_station_id_html_get(station_id: int):
     station = Station.get_or_none(Station.id == station_id)
     if station is None:
         return jsonify({'error': 'Station not found.'})
@@ -50,9 +50,9 @@ def timetable_arrivals_station_id_template_get(station_id: int):
                            routes=data['data']['routes'])
 
 
-@timetable_mod.route('/api/timetable/arrivals/<int:station_id>/relations/template', methods=['GET'])
-@swag_from('docs/timetable.arrivals.station_id.relations.template.get.yml')
-def timetable_arrivals_station_id_relations_template_get(station_id: int):
+@timetable_mod.route('/api/timetable/arrivals/<int:station_id>/relations/html', methods=['GET'])
+@swag_from('docs/timetable.arrivals.station_id.relations.html.get.yml')
+def timetable_arrivals_station_id_relations_html_get(station_id: int):
     station = Station.get_or_none(Station.id == station_id)
     if station is None:
         return jsonify({'error': 'Station not found.'})

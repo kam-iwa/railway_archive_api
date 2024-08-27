@@ -46,9 +46,9 @@
 
 <div class="legend">
   <br>
-  <h3>Objaśnienia skrótów:</h3>
+  {% if dates|length > 0 %}<h3>Objaśnienia skrótów:</h3>{% endif %}
   {% for date in dates %}
-    {{dates.index(date)+1}}) kursuje {{date[0]}} - {{date[1]}}<br>
+    {{dates.index(date)+1}}) kursuje {{date[0].strftime("%d.%m.%Y")}} - {{date[1].strftime("%d.%m.%Y")}}<br>
   {% endfor %}
 </div>
 

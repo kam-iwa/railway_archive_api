@@ -8,7 +8,7 @@ from models.core.models_stops import Stop
 from utils.core.decorators import validate_request
 
 
-@stop_mod.route('/stops', methods=['GET'])
+@stop_mod.route('/api/stops', methods=['GET'])
 @swag_from('docs/stops.get.yml')
 def stops_get():
     stops = Stop.select()
@@ -21,7 +21,7 @@ def stops_get():
     } for stop in stops])
 
 
-@stop_mod.route('/stops/<int:stop_id>', methods=['GET'])
+@stop_mod.route('/api/stops/<int:stop_id>', methods=['GET'])
 @swag_from('docs/stops.stop_id.get.yml')
 def stops_stop_id_get(stop_id: int):
     stop = Stop.get_or_none(Stop.id == stop_id)
@@ -37,7 +37,7 @@ def stops_stop_id_get(stop_id: int):
     })
 
 
-@stop_mod.route('/stops', methods=['POST'])
+@stop_mod.route('/api/stops', methods=['POST'])
 @validate_request(
     required_keys=["route", "station", "arrival_time", "departure_time"],
     optional_keys=["arrival_day", "departure_day"]
@@ -59,7 +59,7 @@ def stops_create():
     return jsonify({'data': stop.id}), 201
 
 
-@stop_mod.route('/stops/<int:stop_id>', methods=["PUT"])
+@stop_mod.route('/api/stops/<int:stop_id>', methods=["PUT"])
 @validate_request(optional_keys=["route", "station", "arrival_time", "departure_time", "arrival_day", "departure_day"])
 @swag_from('docs/stops.stop_id.put.yml')
 def stop_update(stop_id: int):
@@ -74,7 +74,7 @@ def stop_update(stop_id: int):
     return jsonify({}), 200
 
 
-@stop_mod.route('/stops/<int:stop_id>', methods=["DELETE"])
+@stop_mod.route('/api/stops/<int:stop_id>', methods=["DELETE"])
 @swag_from('docs/stops.stop_id.delete.yml')
 def stop_delete(stop_id: int):
     stop = Stop.get_or_none(Stop.id == stop_id)
