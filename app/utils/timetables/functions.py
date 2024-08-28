@@ -1,8 +1,8 @@
 from datetime import timedelta
 
-from models.core.models_routes import Route
-from models.core.models_stations import Station
-from models.core.models_stops import Stop
+from models.trains.models_routes import Route
+from models.trains.models_stations import Station
+from models.trains.models_stops import Stop
 
 
 def get_station_departures(station: Station, date_start, date_end):

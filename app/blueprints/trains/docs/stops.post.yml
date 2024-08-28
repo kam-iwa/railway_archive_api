@@ -1,0 +1,38 @@
+tags:
+  - trains_stops
+summary: Create a new train stop
+description: "
+        Required keys: `route`, `station`, `arrival_time`, `departure_time`\n
+        Optional keys: `arrival_day`, `departure_day`
+        "
+parameters:
+  - in: body
+    name: station
+    required: true
+    schema:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            route:
+              type: number
+              example: 1
+            station:
+              type: number
+              example: 1
+            arrival_time:
+              type: string
+              example: "4:15"
+            departure_time:
+              type: string
+              example: "4:20"
+
+responses:
+  '201':
+    description: Created
+    schema:
+      type: object
+      properties:
+        data:
+          type: integer

@@ -1,0 +1,16 @@
+tags:
+  - trains_routes
+summary: Delete train route by id
+parameters:
+  - name: route_id
+    in: path
+    description: ID of the train route to delete
+    required: true
+    type: number
+responses:
+  '200':
+    description: OK
+    schema:
+      type: array
+      items:
+        type: string
