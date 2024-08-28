@@ -5,7 +5,7 @@ from flasgger import swag_from
 
 from blueprints.trains_timetables import timetable_mod
 from models.trains.models_stations import Station
-from utils.timetables.functions import get_station_arrivals_by_relations, get_station_arrivals, \
+from utils.trains_timetables.functions import get_station_arrivals_by_relations, get_station_arrivals, \
     get_station_departures_by_relations, get_station_departures
 
 

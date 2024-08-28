@@ -5,7 +5,7 @@ from flasgger import swag_from
 
 from blueprints.trains_timetables import timetable_mod
 from models.trains.models_stations import Station
-from utils.timetables.functions import get_station_departures, get_station_departures_by_relations, \
+from utils.trains_timetables.functions import get_station_departures, get_station_departures_by_relations, \
     get_station_arrivals, get_station_arrivals_by_relations
 
 
@@ -27,7 +27,7 @@ def timetable_departures_date_start_date_end_station_id_get(station_id: int, dat
 
     data = get_station_departures(station, date_start, date_end)
 
-    return render_template('timetables_departures.html',
+    return render_template('trains_timetables_departures.html',
                            station_name=station.name,
                            date_period=[date_start, date_end],
                            routes=data['data']['routes'])
@@ -53,7 +53,7 @@ def timetable_departures_relations_date_start_date_end_station_id_get(station_id
     routes, dates = get_station_departures_by_relations(station, date_start, date_end)
     routes = dict(sorted(routes.items()))
 
-    return render_template('timetables_departures_relations.html',
+    return render_template('trains_timetables_departures_relations.html',
                            station_name=station.name,
                            date_period=[date_start, date_end],
                            routes=routes, dates=dates)
@@ -77,7 +77,7 @@ def timetable_arrivals_date_start_date_end_station_id_get(station_id: int, date_
 
     data = get_station_arrivals(station, date_start, date_end)
 
-    return render_template('timetables_arrivals.html',
+    return render_template('trains_timetables_arrivals.html',
                            station_name=station.name,
                            date_period=[date_start, date_end],
                            routes=data['data']['routes'])
@@ -103,7 +103,7 @@ def timetable_arrivals_relations_date_start_date_end_station_id_get(station_id: 
     routes, dates = get_station_arrivals_by_relations(station, date_start, date_end)
     routes = dict(sorted(routes.items()))
 
-    return render_template('timetables_arrivals_relations.html',
+    return render_template('trains_timetables_arrivals_relations.html',
                            station_name=station.name,
                            date_period=[date_start, date_end],
                            routes=routes, dates=dates)
