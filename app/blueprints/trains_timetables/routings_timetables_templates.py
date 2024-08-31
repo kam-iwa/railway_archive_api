@@ -9,10 +9,10 @@ from utils.trains_timetables.functions import get_station_departures, get_statio
     get_station_arrivals, get_station_arrivals_by_relations
 
 
-@timetable_mod.route('/timetable/departures/<date_start>/<date_end>/<int:station_id>', methods=['GET'])
-@swag_from('docs/timetable.departures.date_start.date_end.station_id.get.yml')
-def timetable_departures_date_start_date_end_station_id_get(station_id: int, date_start: str, date_end: str):
-    station = Station.get_or_none(Station.id == station_id)
+@timetable_mod.route('/timetable/departures/<date_start>/<date_end>/<station_name>', methods=['GET'])
+@swag_from('docs/timetable.departures.date_start.date_end.station_name.get.yml')
+def timetable_departures_date_start_date_end_station_id_get(station_name: str, date_start: str, date_end: str):
+    station = Station.get_or_none(Station.name == station_name)
     if station is None:
         return jsonify({'error': 'Station not found.'})
 
@@ -33,10 +33,10 @@ def timetable_departures_date_start_date_end_station_id_get(station_id: int, dat
                            routes=data['data']['routes'])
 
 
-@timetable_mod.route('/timetable/departures/relations/<date_start>/<date_end>/<int:station_id>', methods=['GET'])
-@swag_from('docs/timetable.departures.date_start.date_end.station_id.get.yml')
-def timetable_departures_relations_date_start_date_end_station_id_get(station_id: int, date_start: str, date_end: str):
-    station = Station.get_or_none(Station.id == station_id)
+@timetable_mod.route('/timetable/departures/relations/<date_start>/<date_end>/<station_name>', methods=['GET'])
+@swag_from('docs/timetable.departures.date_start.date_end.station_name.get.yml')
+def timetable_departures_relations_date_start_date_end_station_id_get(station_name: str, date_start: str, date_end: str):
+    station = Station.get_or_none(Station.name == station_name)
     if station is None:
         return jsonify({'error': 'Station not found.'})
 
@@ -59,10 +59,10 @@ def timetable_departures_relations_date_start_date_end_station_id_get(station_id
                            routes=routes, dates=dates)
 
 
-@timetable_mod.route('/timetable/arrivals/<date_start>/<date_end>/<int:station_id>', methods=['GET'])
-@swag_from('docs/timetable.arrivals.date_start.date_end.station_id.get.yml')
-def timetable_arrivals_date_start_date_end_station_id_get(station_id: int, date_start: str, date_end: str):
-    station = Station.get_or_none(Station.id == station_id)
+@timetable_mod.route('/timetable/arrivals/<date_start>/<date_end>/<station_name>', methods=['GET'])
+@swag_from('docs/timetable.arrivals.date_start.date_end.station_name.get.yml')
+def timetable_arrivals_date_start_date_end_station_name_get(station_name: str, date_start: str, date_end: str):
+    station = Station.get_or_none(Station.name == station_name)
     if station is None:
         return jsonify({'error': 'Station not found.'})
 
@@ -83,10 +83,10 @@ def timetable_arrivals_date_start_date_end_station_id_get(station_id: int, date_
                            routes=data['data']['routes'])
 
 
-@timetable_mod.route('/timetable/arrivals/relations/<date_start>/<date_end>/<int:station_id>', methods=['GET'])
-@swag_from('docs/timetable.arrivals.relations.date_start.date_end.station_id.get.yml')
-def timetable_arrivals_relations_date_start_date_end_station_id_get(station_id: int, date_start: str, date_end: str):
-    station = Station.get_or_none(Station.id == station_id)
+@timetable_mod.route('/timetable/arrivals/relations/<date_start>/<date_end>/<station_name>', methods=['GET'])
+@swag_from('docs/timetable.arrivals.relations.date_start.date_end.station_name.get.yml')
+def timetable_arrivals_relations_date_start_date_end_station_name_get(station_name: str, date_start: str, date_end: str):
+    station = Station.get_or_none(Station.name == station_name)
     if station is None:
         return jsonify({'error': 'Station not found.'})
 

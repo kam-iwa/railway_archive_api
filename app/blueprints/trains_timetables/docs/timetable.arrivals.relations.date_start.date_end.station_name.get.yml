@@ -1,10 +1,10 @@
 tags:
 - trains_timetables
-summary: Get departures for station by station id as HTML
+summary: Get arrivals grouped by relations for station by station id as HTML
 parameters:
-  - name: station_id
+  - name: station_name
     in: path
-    description: ID of the station
+    description: Name of the station
     required: true
     type: number
   - name: date_start
@@ -19,7 +19,6 @@ parameters:
     required: true
     type: string
     default: "2024-12-14"
-
 responses:
   '200':
     description: OK

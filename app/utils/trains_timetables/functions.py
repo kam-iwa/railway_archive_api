@@ -49,7 +49,7 @@ def get_station_departures(station: Station, date_start, date_end):
                 route["date_end"]+timedelta(days=route["departure_day"])
             ]
 
-            if route["date_start"] < date_start and date_end < route["date_end"]:
+            if route["date_start"] <= date_start and date_end <= route["date_end"]:
                  date_period = None
             elif route["date_start"] < date_start and date_end > route["date_end"]:
                 date_period[0] = date_start
@@ -154,7 +154,7 @@ def get_station_arrivals(station: Station, date_start, date_end):
                 route["date_end"]+timedelta(days=route["arrival_day"])
             ]
 
-            if route["date_start"] < date_start and date_end < route["date_end"]:
+            if route["date_start"] <= date_start and date_end <= route["date_end"]:
                  date_period = None
             elif route["date_start"] < date_start and date_end > route["date_end"]:
                 date_period[0] = date_start

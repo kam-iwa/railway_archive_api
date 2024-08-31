@@ -11,6 +11,8 @@ services:
         condition: service_healthy
     links:
       - db
+    restart: on-failure
+
   db:
     build: ./docker/db
     healthcheck:
