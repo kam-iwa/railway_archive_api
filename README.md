@@ -1,4 +1,4 @@
-# Railway Manager API
+# Railway Archive API
 API of a passenger rail timetible archivizing system for railway enthusiasts with using Flask, Postgres and Docker.
 
 ## How to run?
