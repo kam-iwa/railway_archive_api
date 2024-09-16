@@ -1,5 +1,5 @@
 # Railway Manager API
-API of a passenger rail network management system for railway enthusiasts with using Flask, Postgres and Docker.
+API of a passenger rail timetible archivizing system for railway enthusiasts with using Flask, Postgres and Docker.
 
 ## How to run?
 To run API, you need just to input into terminal command `python main.py 'parameter'`. List of available parameters with description of each parameter:
